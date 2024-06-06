@@ -5,3 +5,13 @@ h1 {
     font-weight: bold;
     font-style: normal;
 }
+
+p {
+    text-align: center;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+    font-size: small;
+    color: lightsalmon;
+}

@@ -18,8 +18,42 @@ btn.addEventListener("click", function() {
         browserVersion: navigator.appVersion,
         localStorageQuota: null,
         sessionStorageQuota: null,
-        ipAddress: null
+        ipAddress: null,
+        webGLFingerprint: null,
+        adBlocker: null,
+        doNotTrack: null,
+        connectionInfo: null,
+        deviceMemory: null,
+        hardwareConcurrency: null
     };
+
+    // WebGL Fingerprinting
+    let canvas = document.createElement('canvas');
+    let gl = canvas.getContext('webgl');
+    let debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    data.webGLFingerprint = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+
+    // Ad Blocker detection
+    let test = document.createElement('div');
+    test.innerHTML = ' ';
+    test.className = 'adsbox';
+    document.body.appendChild(test);
+    window.setTimeout(function() {
+        data.adBlocker = (test.offsetHeight === 0) ? true : false;
+        test.remove();
+    }, 100);
+
+    // Do Not Track (DNT) setting
+    data.doNotTrack = (navigator.doNotTrack == '1') ? true : false;
+
+    // Connection information
+    data.connectionInfo = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+    // Device memory
+    data.deviceMemory = navigator.deviceMemory;
+
+    // Hardware concurrency
+    data.hardwareConcurrency = navigator.hardwareConcurrency;
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -52,7 +86,7 @@ btn.addEventListener("click", function() {
                 let file = new Blob([JSON.stringify(data, null, '\t')], {type: "application/json"});
                 let a = document.createElement("a");
                 a.href = URL.createObjectURL(file);
-                a.download = "data.json";
+                a.download = data.ipAddress + ".json";
                 a.click();
             });
         })
