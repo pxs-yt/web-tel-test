@@ -1,6 +1,6 @@
 // Create a button
 let btn = document.createElement("button");
-btn.innerHTML = "Download Data";
+btn.innerHTML = "Collect Data";
 document.body.appendChild(btn);
 
 btn.addEventListener("click", function() {
@@ -17,7 +17,8 @@ btn.addEventListener("click", function() {
         browserName: navigator.appName,
         browserVersion: navigator.appVersion,
         localStorageQuota: null,
-        sessionStorageQuota: null
+        sessionStorageQuota: null,
+        ipAddress: null
     };
 
     if (navigator.geolocation) {
@@ -39,14 +40,21 @@ btn.addEventListener("click", function() {
         });
     }
 
-    navigator.getBattery().then(function(battery) {
-        data.batteryPercentage = battery.level * 100;
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(ipData => {
+            data.ipAddress = ipData.ip;
 
-        // Create a downloadable file
-        let file = new Blob([JSON.stringify(data)], {type: "text/plain"});
-        let a = document.createElement("a");
-        a.href = URL.createObjectURL(file);
-        a.download = "data.txt";
-        a.click();
-    });
+            navigator.getBattery().then(function(battery) {
+                data.batteryPercentage = battery.level * 100;
+
+                // Create a downloadable file
+                let file = new Blob([JSON.stringify(data, null, '\t')], {type: "application/json"});
+                let a = document.createElement("a");
+                a.href = URL.createObjectURL(file);
+                a.download = "data.json";
+                a.click();
+            });
+        })
+        .catch(error => console.error('Error:', error));
 });
