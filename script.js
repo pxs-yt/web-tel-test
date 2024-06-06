@@ -1,28 +1,9 @@
 // Create a button
 let btn = document.createElement("button");
-btn.innerHTML = "Collect Data";
+btn.innerHTML = "Download Data";
 document.body.appendChild(btn);
 
-// Create a countdown timer
-let countdown = document.createElement("p");
-document.body.appendChild(countdown);
-
 btn.addEventListener("click", function() {
-    // Start the countdown
-    let timeLeft = 60;
-    let timerId = setInterval(function() {
-        if (timeLeft <= 0) {
-            clearInterval(timerId);
-            countdown.innerHTML = "";
-            collectData();
-        } else {
-            countdown.innerHTML = "Time left: " + timeLeft + " seconds";
-            timeLeft--;
-        }
-    }, 1000);
-});
-
-function collectData() {
     let data = {
         userAgent: navigator.userAgent,
         screenResolution: window.screen.width + "x" + window.screen.height,
@@ -68,4 +49,4 @@ function collectData() {
         a.download = "data.txt";
         a.click();
     });
-}
+});
